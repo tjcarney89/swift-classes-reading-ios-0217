@@ -125,6 +125,12 @@ earth.percentOxygen  // 0.19
 earth.hasLife  // true
 ```
 
-* The big IF.... do we talk about classes as reference types here (I'm inclined to say not yet.. save it for the end of this unit... but i'm all ears, because they will bump into it 
+* Show them this:
+
+![Property](http://i.imgur.com/YAVHwye.png?1)
+
+* This should be somewhat self explanatory for them but I think it's worth stepping through in that they can't change the `name` property because it was declared with the `let` keyword indicating that it was a constant.
+
+* The big IF.... do we talk about classes as reference types here (I'm inclined to say not yet.. save it for the end of this unit... but i'm all ears, because they will bump into it.. as in "Why can we change a property on `earth` like `percentOxygen` when we declared it using the `let` keyword? Meh.... I'm inclined to hold off.
 
 <a href='https://learn.co/lessons/Classes' data-visibility='hidden'>View this lesson on Learn.co</a>
