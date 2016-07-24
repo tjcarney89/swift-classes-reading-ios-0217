@@ -6,7 +6,11 @@
 
 ## Learning Objectives
 
-*
+* Learn how to create your own data types using classes
+* Understand the difference between classes and instances of a class
+* Declare properties for a class
+* Turn functions into methods for a class
+* Understand how `self` is used in a method
 
 ## Classes
 
