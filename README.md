@@ -79,7 +79,7 @@ There is: _Classes_.
 
 Classes provide a way to _encapsulate_ several pieces of data into one _object_, which you can refer to using one constant or variable. Classes can also implement _behavior_ in the form of _methods_ which allow you to interact with _instances_ of the class.
 
-Classes are also a way for you to create your own _type_. A class is a distinct type, just like `String`s, `Int`s, and `Array`s are types. Classes integrate with Swift's type checker in exactly the same was as built-in data types.
+Classes are also a way for you to create your own _type_. A class is a distinct type, just like `String`s, `Int`s, and `Array`s are types. Classes integrate with Swift's type checker in exactly the same way as built-in data types.
 
 ### Defining Classes
 
@@ -273,7 +273,7 @@ Inside the `planetInfo` function, `self` refers to that `earth` instance—it's 
 
 When you moved `planetInfo` inside of the class method and removed the parameter, you were still able to refer to `self`:
 
-```
+```swift
 class Planet {
     var name: String
     var numberOfMoons: Int
