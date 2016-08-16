@@ -3,134 +3,320 @@
 ![Drawing](http://i.imgur.com/g5kSxKV.jpg?1)  
 
 > There is no royal road to anything. One thing at a time, all things in succession. That which grows fast, withers as rapidly. That which grows slowly, endures. -[Josiah Gilbert Holland](https://en.wikipedia.org/wiki/Josiah_Gilbert_Holland)
- 
 
 ## Learning Objectives
 
-* 
+* Learn how to create your own data types using classes
+* Understand the difference between classes and instances of a class
+* Declare properties for a class
+* Turn functions into methods for a class
+* Understand how `self` is used in a method
 
+## Classes
 
+So far in your Swift studies, you have encountered a few different data types: `String`s, `Int`s, `Array`s, `Dictionaries`, and so on. These types have been fairly basic: `String`s hold a sequence of characters, `Int`s hold a number, and so forth.
 
-
-## Outline / Notes
-
-*  In prior lessons, we've created multiple variables which represented the planets. But.. these variables were of type `String`. We were only able to store the various String Literal values (i.e. "Earth", "Mars", etc.) in these variables. But what about all of the other attributes that make up a planet? How do we deal with those?
+Imagine you're writing an app to track data for the planets in our solar system. You'd like to keep various points of data for each of these planets: its name, number of moons, orbital period, and whether it has life or not. You could track this information easily enough in a set of constants:
 
 ```swift
-let name = "Earth"
-let numberOfMoons = 1
-var percentOxygen = 0.21
-var hasLife = true
+let earthName = "Earth"
+let earthMoons = 1
+let earthOrbit = 365.26
+let earthLife = true
+
+let marsName = "Mars"
+let marsMoons = 2
+let marsOrbit = 686.97
+let marsLife = false
 ```
-* Not the best answer. What if we wanted to create every single Planet like this? We would have variables floating around everywhere.
-* What if we can create a new type (name it whatever we like) and store **ALL** of variables/constants above into **ONE** variable?
-* We can create our own types. `Class`
+
+You can probably see that this is already a bit unwieldy, but say you wanted to write a function that takes in some information about a planet, and prints a message detailing that planet's information. Such a function might look like this:
+
+```swift
+func planetInfo(name: String, moons: Int, orbit: Double, hasLife: Bool) {
+    var moonNoun = "moon"
+    if moons != 1 {
+        moonNoun = "moons"
+    }
+    var hasLifeString = "has life"
+    if !hasLife {
+        hasLifeString = "does not have life"
+    }
+    print("\(name) has \(moons) \(moonNoun). Its orbit is \(orbit) days. It \(hasLifeString).")
+}
+
+planetInfo(earthName, moons: earthMoons, orbit: earthOrbit, hasLife: earthLife)
+planetInfo(marsName, moons: marsMoons, orbit: marsOrbit, hasLife: marsLife)
+```
+
+That's _really_ unwieldy! `planetInfo` takes _four_ parameters, and you have to remember to pass them in the right order. Wouldn't it be a lot easier if you could store all of that information together, in one constant (or variable)?
+
+You've learned about tuples. Maybe this information would be a lot easier to track in a tuple. You could rewrite your code to look more like this:
+
+```swift
+let earth = ("Earth", 1, 365.26, true)
+let mars = ("Mars", 2, 686.97, false)
+
+func planetInfoTuple(planet: (String, Int, Double, Bool)) {
+    var moonNoun = "moon"
+    if planet.1 != 1 {
+        moonNoun = "moons"
+    }
+    var hasLifeString = "has life"
+    if !planet.3 {
+        hasLifeString = "does not have life"
+    }
+    print("\(planet.0) has \(planet.1) \(moonNoun). Its orbit is \(planet.2) days. It \(hasLifeString).")
+}
+
+planetInfoTuple(earth)
+planetInfoTuple(mars)
+```
+
+This is a bit better: When you call `planetInfoTuple`, you only need to pass one parameter, and all of a planet's data is stored together. But it's still unwieldy: `planetInfoTuple` has to know exactly which numbered fields contain which pieces of data. There must be a better way!
+
+There is: _Classes_.
+
+Classes provide a way to _encapsulate_ several pieces of data into one _object_, which you can refer to using one constant or variable. Classes can also implement _behavior_ in the form of _methods_ which allow you to interact with _instances_ of the class.
+
+Classes are also a way for you to create your own _type_. A class is a distinct type, just like `String`s, `Int`s, and `Array`s are types. Classes integrate with Swift's type checker in exactly the same was as built-in data types.
+
+### Defining Classes
+
+You can define a class using the `class` keyword, following by the name of the class, and a set of curly braces:
 
 ```swift
 class Planet {
-    //TODO: Write code here
 }
 ```
 
-* We just created a new type. Just like `String`, `Bool`, and `Int` are types, `Planet` is now a type.
+Easy, right? So far, though, your new `Planet` class doesn't really do anything special. Sure, you have a new type, but you haven't solved your real problem yet: Storing data points for a planet.
 
-* You're an expert now:
-
-![Neil](https://media.giphy.com/media/2XsHRy5G950E47BVuww/giphy.gif)
-
+That's where _properties_ come in. Classes can have _properties_ which are pieces of data about specific instances of a class. They are declared similarly to how you declare constants or variables anywhere else, except you don't have to assign a value to them immediately (you'll see why in a second). Here's how you add properties for a planet's name, orbital period, number of moons, and whether it has life or not:
 
 ```swift
 class Planet {
-    let name: String
-    let numberOfMoons: Int
-    var percentOxygen: Double
+    var name: String
+    var numberOfMoons: Int
+    var orbitalPeriod: Double
     var hasLife: Bool
 }
 ```
-* Here we've created a new type called `Planet` which is a class. Within the curly braces after our declaration here, we've given this `Planet` class some variables and constants.
-* This is missing something though? How do we create a planet? How do we assign these various variables some values? When can we do that?
+
+One thing to note: When declaring properties, you have to specify the _type_ of the property. Do you know why? Since you didn't assign a value, Swift can't _infer_ the type—so you have to be explicit about it.
+
+Let's create some planets!
+
+Or…wait. If you entered that code into your own playground (and you should!), you probably notice that the Swift compiler has given you an error: "Class 'Planet' has no initializers". What does that mean? What the heck is an "initializer"?
+
+An _initializer_ is the method called when you create an instance of a class. It sets up the class's state, including the values of its properties. This special method is called `init`. Often times, a class's initializer accepts a parameter for each property, and assigns that parameter to the property. An initializer for the `Planet` class could look like this:
+
+```swift
+init(name: String, numberOfMoons: Int, orbitalPeriod: Double, hasLife: Bool) {
+    self.name = name
+    self.numberOfMoons = numberOfMoons
+    self.orbitalPeriod = orbitalPeriod
+    self.hasLife = hasLife
+}
+```
+
+Notice that the initializer is simply called `init`. It is not proceeded by a keyword such as `func`. While `init` is a method, it is a _special_ method, and has a special syntax. It also returns no value.
+
+Notice, too, that the properties are prefixed by the keyword `self`. In a method, `self` returns to the current instance of a class. In this `init` method, `self` is used to distinguish between the properties and the parameters to `init`, since both the parameters and properties have the same name. (Don't worry about `self` for now: We'll cover that in more detail shortly.)
+
+After you've created an initializer, the complete definition of `Planet` looks like this:
 
 ```swift
 class Planet {
-    let name: String
-    let numberOfMoons: Int
-    var percentOxygen: Double
+    var name: String
+    var numberOfMoons: Int
+    var orbitalPeriod: Double
     var hasLife: Bool
-    
-    init(name: String, numberOfMoons: Int, percentOxygen: Double, hasLife: Bool) {
+
+    init(name: String, numberOfMoons: Int, orbitalPeriod: Double, hasLife: Bool) {
         self.name = name
         self.numberOfMoons = numberOfMoons
-        self.percentOxygen = percentOxygen
+        self.orbitalPeriod = orbitalPeriod
         self.hasLife = hasLife
     }
 }
-
-let earth = Planet(name: "Earth", numberOfMoons: 1, percentOxygen: 0.21, hasLife: true)
 ```
 
-* There's a lot to now step through with the student here. From my experience teaching this, `self` throws off a lot of students, I'm all ears on a good approach there. Here's something that might work (feel free to run with it or not):
+How do you create new planets, though?
 
-* Lets create a functino outside of the `Planet` class declaration, it's a global function in Playground
+### Creating `Planet`s
+
+A `Planet` is a class. Particular `Planet` constants and variables are known as _instances_ of a class, and when you create one, you are said to be _instantiating_ a class. Particular instances of a class are also commonly referred to as _objects_. You can think of a class definition, such as the one for `Planet`, as a blueprint. It defines how a particular "thing" is defined. An _instance_ of a class, or _object_, is one actual "thing" made from that blueprint.
+
+Instantiating a new planet is pretty easy:
 
 ```swift
-func lostOxygen(self: Planet) {
-    
-    self.percentOxygen -= 0.02
-    
-}
-
-lostOxygen(earth)
+let earth2 = Planet(name: "Earth", numberOfMoons: 1, orbitalPeriod: 365.26, hasLife: true)
+let mars2 = Planet(name: "Mars", numberOfMoons: 2, orbitalPeriod: 685.97, hasLife: false)
 ```
 
-* Here we've named the parameter `self` which is of type `Planet`. So whomever calls on this function, must give us a `Planet`  and we refer to the `Planet` given to us within the scope of this function by our parameter named `self`. 
-* Within the scope of every `init` and `func` that you create within your class declaration, you have access to an implicit variable called `self` which refers to the instance of the object who is calling on those functions.
+The code above creates two new `Planet` instances: `earth2` and `mars2`. You can create an instance by calling the class similarly to how you call a function. The parameters you pass in are the same as the ones you specified in the class's `init` method. (When you call `Planet(name:numberOfMoons:orbitalPeriod:hasLife:)`, you're essentially calling the class's `init` method.)
+
+Now that you have a `Planet` class and can create instances of it, how would you rewrite the `planetInfo` function so you can print out information about particular instances of the `Planet` class?
+
+### Methods
+
+You could rewrite the tuple version of `planetInfo` pretty easily to take in a `Planet` parameter instead, and print the information encapsulated by that `Planet` instance:
+
+```swift
+func planetInfoObject(planet: Planet) {
+    var moonNoun = "moon"
+    if planet.numberOfMoons != 1 {
+        moonNoun = "moons"
+    }
+    var hasLifeString = "has life"
+    if !planet.hasLife {
+        hasLifeString = "does not have life"
+    }
+    print("\(planet.name) has \(planet.numberOfMoons) \(moonNoun). Its orbit is \(planet.orbitalPeriod) days. It \(hasLifeString).")
+}
+
+planetInfoObject(earth2)
+planetInfoObject(mars2)
+```
+
+Keep in mind, though, that `planetInfoObject` is defined globally, meaning it is available everywhere in your Swift program, and more important, that the name cannot be used by any other function. This isn't a problem for `Planet` necessarily, but what if you start accumulating more classes, each with its own set of functions. At some point, it would be nice to have more organization in your functions, wouldn't it?
+
+Luckily, Swift provides a way to do that with methods. A _method_ is a function that is tied to a particular class. You can call that method on instances of that class. Methods are declared just like functions, but within the scope (curly braces) of a class definition.
+
+Most importantly, a method automatically has access to the _instance_ that it was called on. That instance is referred to as `self` within that method body. You could move `planetInfoObject` to your `Planet` class definition like so:
 
 ```swift
 class Planet {
-    let name: String
-    let numberOfMoons: Int
-    var percentOxygen: Double
+    var name: String
+    var numberOfMoons: Int
+    var orbitalPeriod: Double
     var hasLife: Bool
-    
-    init(name: String, numberOfMoons: Int, percentOxygen: Double, hasLife: Bool) {
+
+    init(name: String, numberOfMoons: Int, orbitalPeriod: Double, hasLife: Bool) {
         self.name = name
         self.numberOfMoons = numberOfMoons
-        self.percentOxygen = percentOxygen
+        self.orbitalPeriod = orbitalPeriod
         self.hasLife = hasLife
     }
-    
-    func lostOxygen() {
-        self.percentOxygen -= 0.02
+
+    func planetInfo() {
+        var moonNoun = "moon"
+        if self.numberOfMoons != 1 {
+            moonNoun = "moons"
+        }
+        var hasLifeString = "has life"
+        if !self.hasLife {
+            hasLifeString = "does not have life"
+        }
+        print("\(self.name) has \(self.numberOfMoons) \(moonNoun). Its orbit is \(self.orbitalPeriod) days. It \(hasLifeString).")
     }
 }
-
-let earth = Planet(name: "Earth", numberOfMoons: 1, percentOxygen: 0.21, hasLife: true)
-earth.lostOxygen()
 ```
 
-* Notice how within the `lostOxygen()` function, we have access to this `self` variable provided to us. Imagine when the `earth` contstant we created above is passing itself along to every function it calls.
-
-* Feel free to not touch TOO much on functions here as that was the intention of the next lesson.
-
-* We should show them accessing these properties. We should teach them the term instance property (maybe?)
+You can call `planetInfo` by writing the name of a `Planet` variable or constant, followed by a dot (`.`), and then `planetInfo`:
 
 ```swift
-let earth = Planet(name: "Earth", numberOfMoons: 1, percentOxygen: 0.21, hasLife: true)
-
-earth.lostOxygen()
-
-earth.name  // "Earth"
-earth.numberOfMoons  // 1
-earth.percentOxygen  // 0.19
-earth.hasLife  // true
+earth2.planetInfo()
+mars2.planetInfo()
 ```
 
-* Show them this:
+Notice that you don't have to pass a parameter: `planetInfo()` will already have access to the instance it is called on, via `self`.
 
-![Property](http://i.imgur.com/YAVHwye.png?1)
+#### What's Up With `self`?
 
-* This should be somewhat self explanatory for them but I think it's worth stepping through in that they can't change the `name` property because it was declared with the `let` keyword indicating that it was a constant.
+`self` is a bit weird, so it might make sense to break this down a bit more. Let's review what you've learned so far about methods from the beginning.
 
-* The big IF.... do we talk about classes as reference types here (I'm inclined to say not yet.. save it for the end of this unit... but i'm all ears, because they will bump into it.. as in "Why can we change a property on `earth` like `percentOxygen` when we declared it using the `let` keyword? Meh.... I'm inclined to hold off.
+At first, you wrote `planetInfo` as a simple function that took a `Planet` parameter:
+
+```swift
+func planetInfo(planet: Planet) {
+    var moonNoun = "moon"
+    if planet.numberOfMoons != 1 {
+        moonNoun = "moons"
+    }
+    var hasLifeString = "has life"
+    if !planet.hasLife {
+        hasLifeString = "does not have life"
+    }
+    print("\(planet.name) has \(planet.numberOfMoons) \(moonNoun). Its orbit is \(planet.orbitalPeriod) days. It \(hasLifeString).")
+}
+```
+
+Remember that you could have named that `planet` parameter anything you wanted. Let's say you named it `self` instead:
+
+```swift
+func planetInfoObject(self: Planet) {
+    var moonNoun = "moon"
+    if self.numberOfMoons != 1 {
+        moonNoun = "moons"
+    }
+    var hasLifeString = "has life"
+    if !self.hasLife {
+        hasLifeString = "does not have life"
+    }
+    print("\(self.name) has \(self.numberOfMoons) \(moonNoun). Its orbit is \(self.orbitalPeriod) days. It \(hasLifeString).")
+}
+```
+
+No problem, right? Swift doesn't care what exactly you call a parameter, as long as you always refer to that parameter using the right name. `self` is just as fine as `planet`.
+
+Remember that you call that function like this:
+
+```swift
+let earth = Planet(name: "Earth", numberOfMoons: 1, orbitalPeriod: 365.26, hasLife: true)
+
+planetInfo(earth)
+```
+
+Inside the `planetInfo` function, `self` refers to that `earth` instance—it's just called `self` inside the function, because that's the name of the parameter.
+
+When you moved `planetInfo` inside of the class method and removed the parameter, you were still able to refer to `self`:
+
+```
+class Planet {
+    var name: String
+    var numberOfMoons: Int
+    var orbitalPeriod: Double
+    var hasLife: Bool
+
+    init(name: String, numberOfMoons: Int, orbitalPeriod: Double, hasLife: Bool) {
+        self.name = name
+        self.numberOfMoons = numberOfMoons
+        self.orbitalPeriod = orbitalPeriod
+        self.hasLife = hasLife
+    }
+
+    func planetInfo() {
+        var moonNoun = "moon"
+        if self.numberOfMoons != 1 {
+            moonNoun = "moons"
+        }
+        var hasLifeString = "has life"
+        if !self.hasLife {
+            hasLifeString = "does not have life"
+        }
+        print("\(self.name) has \(self.numberOfMoons) \(moonNoun). Its orbit is \(self.orbitalPeriod) days. It \(hasLifeString).")
+    }
+}
+```
+
+Why is that the case?
+
+Inside the `planetInfo` _method_, `self` refers to the object that the method was called on. When you called the method, you wrote this:
+
+```swift
+earth.planetInfo()
+```
+
+Essentially, that method call is like this:
+
+```swift
+planetInfo(earth)
+```
+
+Except that first parameter is _implicit_—the `earth` object is automatically passed to the method, and you can refer to it as `self` inside the method.
+
+If you're still a little fuzzy on properties and methods, don't worry—you'll be covering them in more detail in the following lesson. For now, just be comfortable with the notion of classes and instances of classes.
 
 <a href='https://learn.co/lessons/Classes' data-visibility='hidden'>View this lesson on Learn.co</a>
