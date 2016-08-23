@@ -4,13 +4,17 @@
 
 > There is no royal road to anything. One thing at a time, all things in succession. That which grows fast, withers as rapidly. That which grows slowly, endures. -[Josiah Gilbert Holland](https://en.wikipedia.org/wiki/Josiah_Gilbert_Holland)
 
+## Overview
+
+We'll introduce classes, which provide a way to encapsulate several pieces of data into one object, which you can refer to using one constant or variable.
+
 ## Learning Objectives
 
-* Learn how to create your own data types using classes
-* Understand the difference between classes and instances of a class
+* Create data types using classes
+* Distinguish between classes and instances of a class
 * Declare properties for a class
 * Turn functions into methods for a class
-* Understand how `self` is used in a method
+* Use `self` in a method
 
 ## Classes
 
@@ -317,6 +321,5 @@ planetInfo(earth)
 
 Except that first parameter is _implicit_—the `earth` object is automatically passed to the method, and you can refer to it as `self` inside the method.
 
-If you're still a little fuzzy on properties and methods, don't worry—you'll be covering them in more detail in the following lesson. For now, just be comfortable with the notion of classes and instances of classes.
 
 <a href='https://learn.co/lessons/Classes' data-visibility='hidden'>View this lesson on Learn.co</a>
