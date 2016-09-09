@@ -87,7 +87,7 @@ Classes are also a way for you to create your own _type_. A class is a distinct 
 
 ### Defining Classes
 
-You can define a class using the `class` keyword, following by the name of the class, and a set of curly braces:
+You can define a class using the `class` keyword, followed by the name of the class, and a set of curly braces:
 
 ```swift
 class Planet {
@@ -323,3 +323,5 @@ Except that first parameter is _implicit_—the `earth` object is automatically 
 
 
 <a href='https://learn.co/lessons/Classes' data-visibility='hidden'>View this lesson on Learn.co</a>
+
+<p class='util--hide'>View <a href='https://learn.co/lessons/swift-classes-reading'>Classes</a> on Learn.co and start learning to code for free.</p>
