@@ -20,8 +20,8 @@ func planetInfo(name: String, moons: Int, orbit: Double, hasLife: Bool) {
     print("\(name) has \(moons) \(moonNoun). Its orbit is \(orbit) days. It \(hasLifeString).")
 }
 
-planetInfo(earthName, moons: earthMoons, orbit: earthOrbit, hasLife: earthLife)
-planetInfo(marsName, moons: marsMoons, orbit: marsOrbit, hasLife: marsLife)
+planetInfo(name: earthName, moons: earthMoons, orbit: earthOrbit, hasLife: earthLife)
+planetInfo(name: marsName, moons: marsMoons, orbit: marsOrbit, hasLife: marsLife)
 
 
 
@@ -40,8 +40,8 @@ func planetInfoTuple(planet: (String, Int, Double, Bool)) {
     print("\(planet.0) has \(planet.1) \(moonNoun). Its orbit is \(planet.2) days. It \(hasLifeString).")
 }
 
-planetInfoTuple(earth)
-planetInfoTuple(mars)
+planetInfoTuple(planet: earth)
+planetInfoTuple(planet: mars)
 
 
 
@@ -86,8 +86,8 @@ func planetInfoObject(planet: Planet) {
     print("\(planet.name) has \(planet.numberOfMoons) \(moonNoun). Its orbit is \(planet.orbitalPeriod) days. It \(hasLifeString).")
 }
 
-planetInfoObject(earth2)
-planetInfoObject(mars2)
+planetInfoObject(planet: earth2)
+planetInfoObject(planet: mars2)
 
 earth2.planetInfo()
 mars2.planetInfo()

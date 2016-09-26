@@ -49,8 +49,8 @@ func planetInfo(name: String, moons: Int, orbit: Double, hasLife: Bool) {
     print("\(name) has \(moons) \(moonNoun). Its orbit is \(orbit) days. It \(hasLifeString).")
 }
 
-planetInfo(earthName, moons: earthMoons, orbit: earthOrbit, hasLife: earthLife)
-planetInfo(marsName, moons: marsMoons, orbit: marsOrbit, hasLife: marsLife)
+planetInfo(name: earthName, moons: earthMoons, orbit: earthOrbit, hasLife: earthLife)
+planetInfo(name: marsName, moons: marsMoons, orbit: marsOrbit, hasLife: marsLife)
 ```
 
 That's _really_ unwieldy! `planetInfo` takes _four_ parameters, and you have to remember to pass them in the right order. Wouldn't it be a lot easier if you could store all of that information together, in one constant (or variable)?
@@ -73,8 +73,8 @@ func planetInfoTuple(planet: (String, Int, Double, Bool)) {
     print("\(planet.0) has \(planet.1) \(moonNoun). Its orbit is \(planet.2) days. It \(hasLifeString).")
 }
 
-planetInfoTuple(earth)
-planetInfoTuple(mars)
+planetInfoTuple(planet: earth)
+planetInfoTuple(planet: mars)
 ```
 
 This is a bit better: When you call `planetInfoTuple`, you only need to pass one parameter, and all of a planet's data is stored together. But it's still unwieldy: `planetInfoTuple` has to know exactly which numbered fields contain which pieces of data. There must be a better way!
@@ -180,8 +180,8 @@ func planetInfoObject(planet: Planet) {
     print("\(planet.name) has \(planet.numberOfMoons) \(moonNoun). Its orbit is \(planet.orbitalPeriod) days. It \(hasLifeString).")
 }
 
-planetInfoObject(earth2)
-planetInfoObject(mars2)
+planetInfoObject(planet: earth2)
+planetInfoObject(planet: mars2)
 ```
 
 Keep in mind, though, that `planetInfoObject` is defined globally, meaning it is available everywhere in your Swift program, and more important, that the name cannot be used by any other function. This isn't a problem for `Planet` necessarily, but what if you start accumulating more classes, each with its own set of functions. At some point, it would be nice to have more organization in your functions, wouldn't it?
@@ -270,7 +270,7 @@ Remember that you call that function like this:
 ```swift
 let earth = Planet(name: "Earth", numberOfMoons: 1, orbitalPeriod: 365.26, hasLife: true)
 
-planetInfo(earth)
+planetInfo(planet: earth)
 ```
 
 Inside the `planetInfo` function, `self` refers to that `earth` instance—it's just called `self` inside the function, because that's the name of the parameter.
